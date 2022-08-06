@@ -31,8 +31,9 @@ public class PlayerManager : MonoBehaviour
     public PathType pathsystem = PathType.Linear;
     public GameObject[] pathvalGameObject = new GameObject[8];
     private Vector3[] pathval = new Vector3[8];
+    public GameObject[] pavalroad2_1 = new GameObject[8];
+    public GameObject[] pavalroad2_2 = new GameObject[8];
 
-    public Transform test;
 
     private void Awake()
     {
@@ -94,7 +95,7 @@ public class PlayerManager : MonoBehaviour
             anim.SetBool("IsRun", true);
             anim.SetBool("IsJump", false);
         }
-        if (transform.position.y < -0.9)
+        if (transform.position.y < -0.3)
         {
             gameObject.SetActive(false);
             MenuManager.MenuManagerIstance.GameStace = false;
@@ -119,13 +120,19 @@ public class PlayerManager : MonoBehaviour
             anim.SetBool("IsRun", false);
 
         }
-        if (other.transform.tag == "Lo_xo_cheo")
+        if (other.transform.tag == "Lo_xo_right")
         {
-            transform.position = new Vector3(transform.position.x + 3.3f, transform.position.y + 1.5f, transform.position.z);
+            transform.position = new Vector3(transform.position.x + 3.6f, transform.position.y + 1.2f, transform.position.z);
             transform.Rotate(0, 0, 25f);
             rigidbody.isKinematic = true;
 
 
+        }
+        if (other.tag == "Lo_xo_left")
+        {
+            transform.position = new Vector3(transform.position.x + -3.6f, transform.position.y + 1.2f, transform.position.z);
+            transform.Rotate(0, 0, -25f);
+            rigidbody.isKinematic = true;
         }
         if (other.transform.tag == "Trap_gai")
         {
@@ -165,7 +172,17 @@ public class PlayerManager : MonoBehaviour
         if (other.tag == "road_1")
         {
 
-            MovePaval();
+            MovePaval(pathvalGameObject);
+        }
+        if (other.tag == "road_2_1")
+        {
+            MovePaval(pavalroad2_1);
+
+        }
+        if (other.tag == "road_2_2")
+        {
+            MovePaval(pavalroad2_2);
+
         }
 
     }
@@ -200,24 +217,26 @@ public class PlayerManager : MonoBehaviour
         
     //}
     
-    public void ToListVector()
+    public void ToListVector(GameObject[] pavalpoint)
     {
         for (int i = 0; i < pathvalGameObject.Length; i++)
         {
-            pathval[i] = pathvalGameObject[i].transform.position;
+            pathval[i] = pavalpoint[i].transform.position;
         }
     }
-    public void MovePaval()
+    public void MovePaval(GameObject[] pavalpoint)
     {
         Move = false;
-        ToListVector();
+        ToListVector(pavalpoint);
+        rigidbody.isKinematic = true;
         transform.DOPath( pathval, 3f, pathsystem).SetEase(Ease.Linear).OnComplete(() =>
         {
             Move = true;
-            
+            rigidbody.isKinematic = false;
         });
     }
 
+   
     
         
     

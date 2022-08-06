@@ -4,23 +4,13 @@ using UnityEngine;
 
 public class Road_1 : MonoBehaviour
 {
-    public static Road_1 road1;
-    private List<Vector3> listvector;
-    private void Awake()
-    {
-        road1 = this;
-    }
+    public GameObject[] point = new GameObject[8];
+    public static Vector3[] pointroad = new Vector3[8];
     private void Start()
     {
-       
-    }
-    public void listvt()
-    {
-        listvector = new List<Vector3>();
-        foreach (Transform i in transform.GetChild(0))
+        for(int i = 0; i <point.Length; i++)
         {
-            listvector.Add(i.position);
+            pointroad[i] = point[i].transform.position;
         }
-
     }
 }
