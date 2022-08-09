@@ -90,7 +90,7 @@ public class PlayerManager : MonoBehaviour
 
         if (transform.position.y >= 1f)
         {
-            speed = 10f;
+            speed = 14f;
             anim.SetLayerWeight(1, 0f);
             anim.SetBool("IsRun", true);
             anim.SetBool("IsJump", false);
@@ -122,17 +122,23 @@ public class PlayerManager : MonoBehaviour
         }
         if (other.transform.tag == "Lo_xo_right")
         {
-            transform.position = new Vector3(transform.position.x + 3.6f, transform.position.y + 1.2f, transform.position.z);
-            transform.Rotate(0, 0, 25f);
+            Cameractl.CameractlIstance.rotationcamera = true;
+            Cameractl.CameractlIstance.right = true;
+            transform.position = Vector3.Lerp(transform.position,new Vector3 (transform.position.x + 3.6f, transform.position.y + 1.2f, transform.position.z),50*Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0f, 0f, 25f), 50f * Time.deltaTime);
             rigidbody.isKinematic = true;
 
 
         }
         if (other.tag == "Lo_xo_left")
         {
-            transform.position = new Vector3(transform.position.x + -3.6f, transform.position.y + 1.2f, transform.position.z);
-            transform.Rotate(0, 0, -25f);
+            Cameractl.CameractlIstance.rotationcamera = true;
+            transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x + -3.6f, transform.position.y + 1.2f, transform.position.z), 50 * Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0f, 0f, -25f), 50f * Time.deltaTime);
             rigidbody.isKinematic = true;
+            //transform.position = new Vector3(transform.position.x + -3.6f, transform.position.y + 1.2f, transform.position.z);
+            //transform.Rotate(0, 0, -25f);
+            //rigidbody.isKinematic = true;
         }
         if (other.transform.tag == "Trap_gai")
         {
@@ -195,6 +201,7 @@ public class PlayerManager : MonoBehaviour
             anim.SetLayerWeight(1, 0f);
             textlv.text = "Lv " + lv.ToString();
         }
+      
 
     }
     //public void MoveAI(Transform des)

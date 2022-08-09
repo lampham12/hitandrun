@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Lo_xo_left : MonoBehaviour
+public class Wall_left : MonoBehaviour
 {
     Rigidbody rg;
     private void OnTriggerEnter(Collider other)
@@ -11,10 +11,10 @@ public class Lo_xo_left : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log("on the wall");
-        other.gameObject.transform.Rotate(0, 0, 25);
-        rg.velocity = new Vector3(2.5f, 3, 0);
+        other.gameObject.transform.rotation = Quaternion.Slerp(other.transform.rotation, Quaternion.Euler(0, 0, 0), 50 * Time.deltaTime);
+        rg.velocity = new Vector3(3.5f, 3, 0f);
         rg.isKinematic = false;
+        Cameractl.CameractlIstance.rotationcamera = false;
 
     }
 }
