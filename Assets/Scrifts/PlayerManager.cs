@@ -7,26 +7,26 @@ using UnityEngine.AI;
 
 public class PlayerManager : MonoBehaviour
 {
-    private int distance;
+    public static PlayerManager PlayerManagerIstance;
+    private float distance =0;
     private Vector3 player;
 
     private int lv;
     public Text textlv;
 
-    public float speed = 10f;
+    public float speed ;
     public Camera cameramain;
-    public float swipespees = 31.5f;
+    public float swipespees ;
     private Transform localtrans;
-    private Vector3 lastMouPos;
+    public Vector3 lastMouPos;
     private Vector3 mousePos;
     private Vector3 newPosfortrans;
 
-    private bool Move = true;
+    public bool Move = true;
 
     private Animator anim;
 
     Rigidbody rigidbody;
-    NavMeshAgent agent;
 
     public PathType pathsystem = PathType.Linear;
     public GameObject[] pathvalGameObject = new GameObject[8];
@@ -34,23 +34,29 @@ public class PlayerManager : MonoBehaviour
     public GameObject[] pavalroad2_1 = new GameObject[8];
     public GameObject[] pavalroad2_2 = new GameObject[8];
 
+    public bool thewall =false;
 
     private void Awake()
     {
-        agent = GetComponent<NavMeshAgent>();
         rigidbody = gameObject.GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
+        PlayerManagerIstance = this;
     }
     private void Start()
     {
         localtrans = GetComponent<Transform>();
         textlv.text = "Lv " + lv.ToString();
+        thewall = false;
     }
     void Update()
     {
         transform.position = new Vector3((Mathf.Clamp(transform.position.x, distance - 3.5f, distance + 3.5f)), transform.position.y, transform.position.z);
-        if (MenuManager.MenuManagerIstance.GameStace && Move) 
+        if (MenuManager.MenuManagerIstance.GameStace && Move)
+        {
+            
             MovePlayer();
+        }
+
         var ray = new Ray(transform.position, transform.forward);
         RaycastHit hit;
 
@@ -75,22 +81,32 @@ public class PlayerManager : MonoBehaviour
         PlayRun();
         if (Input.GetMouseButton(0))
         {
-            mousePos = cameramain.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 10f));
+            mousePos = cameramain.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 18f));
             float xDiff = mousePos.x - lastMouPos.x;
-            newPosfortrans.x = localtrans.position.x + xDiff * Time.deltaTime * swipespees;
-            newPosfortrans.y = localtrans.position.y;
-            newPosfortrans.z = localtrans.position.z;
-            localtrans.position = newPosfortrans/* + localtrans.forward * speed * Time.deltaTime*/;
+            if (thewall)
+            {
+                newPosfortrans.x = localtrans.position.x;
+            }
+            else
+            {
+                newPosfortrans.x = localtrans.position.x + xDiff * swipespees * Time.deltaTime;
+                newPosfortrans.y = localtrans.position.y;
+                newPosfortrans.z = localtrans.position.z;
+                localtrans.position = newPosfortrans/* + localtrans.forward * speed * Time.deltaTime*/;
 
 
-            lastMouPos = mousePos;
+                lastMouPos = mousePos;
+
+
+            }
+          
 
         }
 
 
         if (transform.position.y >= 1f)
         {
-            speed = 14f;
+            speed = 15f;
             anim.SetLayerWeight(1, 0f);
             anim.SetBool("IsRun", true);
             anim.SetBool("IsJump", false);
@@ -122,20 +138,27 @@ public class PlayerManager : MonoBehaviour
         }
         if (other.transform.tag == "Lo_xo_right")
         {
+
+            lastMouPos = Vector3.zero;
+            transform.position = new Vector3(transform.position.x, transform.position.y, Mathf.MoveTowards(transform.position.z, 1000, speed * Time.deltaTime));
             Cameractl.CameractlIstance.rotationcamera = true;
             Cameractl.CameractlIstance.right = true;
             transform.position = Vector3.Lerp(transform.position,new Vector3 (transform.position.x + 3.6f, transform.position.y + 1.2f, transform.position.z),50*Time.deltaTime);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0f, 0f, 25f), 50f * Time.deltaTime);
             rigidbody.isKinematic = true;
+            
 
 
         }
         if (other.tag == "Lo_xo_left")
         {
+
+            lastMouPos = Vector3.zero;
             Cameractl.CameractlIstance.rotationcamera = true;
             transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x + -3.6f, transform.position.y + 1.2f, transform.position.z), 50 * Time.deltaTime);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0f, 0f, -25f), 50f * Time.deltaTime);
             rigidbody.isKinematic = true;
+            
             //transform.position = new Vector3(transform.position.x + -3.6f, transform.position.y + 1.2f, transform.position.z);
             //transform.Rotate(0, 0, -25f);
             //rigidbody.isKinematic = true;
@@ -148,8 +171,10 @@ public class PlayerManager : MonoBehaviour
 
         }
         if (other.transform.tag == "in")
-        {
+        {   
+            
             Destroy(other.gameObject);
+            Cameractl.CameractlIstance.Camerain();
             player = transform.position;
             distance = 500;
             transform.position = new Vector3(transform.position.x + 500f, transform.position.y, transform.position.z);
@@ -177,16 +202,21 @@ public class PlayerManager : MonoBehaviour
         //}
         if (other.tag == "road_1")
         {
-
+            lastMouPos = Vector3.zero;
             MovePaval(pathvalGameObject);
         }
         if (other.tag == "road_2_1")
         {
+            lastMouPos = Vector3.zero;
+            mousePos = Vector3.zero;
             MovePaval(pavalroad2_1);
 
         }
         if (other.tag == "road_2_2")
-        {
+        { 
+            lastMouPos =Vector3.zero;
+            mousePos = Vector3.zero;
+
             MovePaval(pavalroad2_2);
 
         }
@@ -236,9 +266,10 @@ public class PlayerManager : MonoBehaviour
         Move = false;
         ToListVector(pavalpoint);
         rigidbody.isKinematic = true;
-        transform.DOPath( pathval, 3f, pathsystem).SetEase(Ease.Linear).OnComplete(() =>
+        transform.DOPath( pathval, 1.5f, pathsystem).SetEase(Ease.Linear).OnComplete(() =>
         {
-            Move = true;
+            
+            Move = true;        
             rigidbody.isKinematic = false;
         });
     }
