@@ -93,13 +93,25 @@ public class PlayerManager : MonoBehaviour
                 newPosfortrans.y = localtrans.position.y;
                 newPosfortrans.z = localtrans.position.z;
                 localtrans.position = newPosfortrans/* + localtrans.forward * speed * Time.deltaTime*/;
-
+                // vector direct
+                //trai -a phai +a;
+                // dis lastmouse mouse;
+                //a- ;
 
                 lastMouPos = mousePos;
-
-
             }
-          
+            Debug.Log(xDiff);
+
+
+            if (xDiff > 0)
+                transform.rotation = Quaternion.Euler(0, 30, 0);
+            if (xDiff < 0)
+                transform.rotation = Quaternion.Euler(0, -30, 0);
+            
+
+            
+         
+            
 
         }
 
@@ -146,6 +158,7 @@ public class PlayerManager : MonoBehaviour
             transform.position = Vector3.Lerp(transform.position,new Vector3 (transform.position.x + 3.6f, transform.position.y + 1.2f, transform.position.z),50*Time.deltaTime);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0f, 0f, 25f), 50f * Time.deltaTime);
             rigidbody.isKinematic = true;
+            thewall = true;
             
 
 
@@ -158,6 +171,7 @@ public class PlayerManager : MonoBehaviour
             transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x + -3.6f, transform.position.y + 1.2f, transform.position.z), 50 * Time.deltaTime);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0f, 0f, -25f), 50f * Time.deltaTime);
             rigidbody.isKinematic = true;
+            thewall = true;
             
             //transform.position = new Vector3(transform.position.x + -3.6f, transform.position.y + 1.2f, transform.position.z);
             //transform.Rotate(0, 0, -25f);

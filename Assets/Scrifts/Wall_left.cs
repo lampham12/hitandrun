@@ -12,8 +12,6 @@ public class Wall_left : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         rg = other.GetComponent<Rigidbody>();
-        if(other.tag=="Player")
-        PlayerManager.PlayerManagerIstance.thewall = true;
     }
     private void OnTriggerExit(Collider other)
     {
