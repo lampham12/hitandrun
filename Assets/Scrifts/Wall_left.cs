@@ -5,18 +5,19 @@ using UnityEngine;
 public class Wall_left : MonoBehaviour
 {
     Rigidbody rg;
-    private void Start()
-    {
-        
-    }
+   
     private void OnTriggerEnter(Collider other)
     {
+       
         rg = other.GetComponent<Rigidbody>();
     }
     private void OnTriggerExit(Collider other)
     {
         if (other.tag == "Player")
+        {
             PlayerManager.PlayerManagerIstance.thewall = false;
+            PlayerManager.PlayerManagerIstance.therotation = true;
+        }
         other.gameObject.transform.rotation = Quaternion.Slerp(other.transform.rotation, Quaternion.Euler(0, 0, 0), 50 * Time.deltaTime);
         rg.velocity = new Vector3(3.5f, 3, -7f);
         rg.isKinematic = false;

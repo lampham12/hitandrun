@@ -34,6 +34,7 @@ public class PlayerManager : MonoBehaviour
     public GameObject[] pavalroad2_1 = new GameObject[8];
     public GameObject[] pavalroad2_2 = new GameObject[8];
 
+    public bool therotation = true;
     public bool thewall =false;
 
     private void Awake()
@@ -44,6 +45,7 @@ public class PlayerManager : MonoBehaviour
     }
     private void Start()
     {
+        therotation = true;
         localtrans = GetComponent<Transform>();
         textlv.text = "Lv " + lv.ToString();
         thewall = false;
@@ -53,7 +55,7 @@ public class PlayerManager : MonoBehaviour
         transform.position = new Vector3((Mathf.Clamp(transform.position.x, distance - 3.5f, distance + 3.5f)), transform.position.y, transform.position.z);
         if (MenuManager.MenuManagerIstance.GameStace && Move)
         {
-            
+            transform.position = new Vector3(transform.position.x, transform.position.y, Mathf.MoveTowards(transform.position.z, 1000, speed * Time.deltaTime));
             MovePlayer();
         }
 
@@ -77,44 +79,46 @@ public class PlayerManager : MonoBehaviour
     public void MovePlayer()
     {
 
-        transform.position = new Vector3(transform.position.x, transform.position.y, Mathf.MoveTowards(transform.position.z, 1000, speed * Time.deltaTime));
+        
         PlayRun();
         if (Input.GetMouseButton(0))
         {
-            mousePos = cameramain.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 18f));
+            mousePos = cameramain.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 18));
             float xDiff = mousePos.x - lastMouPos.x;
+            
             if (thewall)
             {
                 newPosfortrans.x = localtrans.position.x;
             }
             else
             {
-                newPosfortrans.x = localtrans.position.x + xDiff * swipespees * Time.deltaTime;
-                newPosfortrans.y = localtrans.position.y;
-                newPosfortrans.z = localtrans.position.z;
-                localtrans.position = newPosfortrans/* + localtrans.forward * speed * Time.deltaTime*/;
-                // vector direct
-                //trai -a phai +a;
-                // dis lastmouse mouse;
-                //a- ;
+                //if (xDiff < 0.01)
+                {
+                    newPosfortrans.x = localtrans.position.x + xDiff * swipespees * Time.deltaTime;
+                    newPosfortrans.y = localtrans.position.y;
+                    newPosfortrans.z = localtrans.position.z;
+                    localtrans.position = newPosfortrans/* + localtrans.forward * speed * Time.deltaTime*/;
+                    // vector direct
+                    //trai -a phai +a;
+                    // dis lastmouse mouse;
+                    //a- ;
+                    Debug.Log("e diff" + xDiff);
+                    lastMouPos = mousePos;
+                }
 
-                lastMouPos = mousePos;
+                if (xDiff >= 0 && xDiff < 0.1f)
+                    transform.rotation = Quaternion.Euler(0, 30, 0);
+                if (xDiff < 0 && xDiff > -0.1f)
+                    transform.rotation = Quaternion.Euler(0, -30, 0);               
+               
             }
-            Debug.Log(xDiff);
-
-
-            if (xDiff > 0)
-                transform.rotation = Quaternion.Euler(0, 30, 0);
-            if (xDiff < 0)
-                transform.rotation = Quaternion.Euler(0, -30, 0);
             
-
-            
-         
-            
-
         }
-
+        if (therotation == true)
+        {
+            if (Input.GetMouseButtonUp(0))
+                transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
 
         if (transform.position.y >= 1f)
         {
@@ -150,7 +154,8 @@ public class PlayerManager : MonoBehaviour
         }
         if (other.transform.tag == "Lo_xo_right")
         {
-
+            therotation = false;
+            transform.rotation = Quaternion.Euler(0, 0, 0);
             lastMouPos = Vector3.zero;
             transform.position = new Vector3(transform.position.x, transform.position.y, Mathf.MoveTowards(transform.position.z, 1000, speed * Time.deltaTime));
             Cameractl.CameractlIstance.rotationcamera = true;
@@ -165,7 +170,8 @@ public class PlayerManager : MonoBehaviour
         }
         if (other.tag == "Lo_xo_left")
         {
-
+            therotation = false;
+            transform.rotation = Quaternion.Euler(0, 0, 0);
             lastMouPos = Vector3.zero;
             Cameractl.CameractlIstance.rotationcamera = true;
             transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x + -3.6f, transform.position.y + 1.2f, transform.position.z), 50 * Time.deltaTime);
@@ -216,18 +222,20 @@ public class PlayerManager : MonoBehaviour
         //}
         if (other.tag == "road_1")
         {
+            transform.rotation = Quaternion.Euler(0, 0, 0);
             lastMouPos = Vector3.zero;
             MovePaval(pathvalGameObject);
         }
         if (other.tag == "road_2_1")
         {
+            transform.rotation = Quaternion.Euler(0, 0, 0);
             lastMouPos = Vector3.zero;
             mousePos = Vector3.zero;
             MovePaval(pavalroad2_1);
 
         }
         if (other.tag == "road_2_2")
-        { 
+        { transform.rotation = Quaternion.Euler(0, 0, 0);
             lastMouPos =Vector3.zero;
             mousePos = Vector3.zero;
 
