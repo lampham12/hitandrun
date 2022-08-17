@@ -5,11 +5,11 @@ using UnityEngine;
 public class TouchPlayer : MonoBehaviour
 {
 
-    private float speed = 2;
+    private float speed = 0.01f;
     private Touch touch;
     private void Update()
     {
-        transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + 0.1f);
+        //transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + 0.1f);
         if (Input.touchCount > 0) 
         {
             Debug.Log("hehehe");
@@ -21,6 +21,7 @@ public class TouchPlayer : MonoBehaviour
             }
 
         }
+
     }
     //bool swipeRight = false;
     //bool swipeLeft = false;

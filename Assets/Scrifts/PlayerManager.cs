@@ -14,13 +14,19 @@ public class PlayerManager : MonoBehaviour
     private int lv;
     public Text textlv;
 
-    public float speed ;
     public Camera cameramain;
+    public GameObject Ball;
+    public Transform Ballpos;
+    private float timeball;
+
+    public float speed ;
     public float swipespees ;
     private Transform localtrans;
     public Vector3 lastMouPos;
     private Vector3 mousePos;
     private Vector3 newPosfortrans;
+    private Touch touch;
+    private float speedleftright=0.014f;
 
     public bool Move = true;
 
@@ -62,12 +68,22 @@ public class PlayerManager : MonoBehaviour
         var ray = new Ray(transform.position, transform.forward);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, 4
+        if (Physics.Raycast(ray, out hit, 8
             ))
-        {
-            Debug.DrawRay(transform.position, transform.forward * 4, Color.red);
+        {         
+            Debug.DrawRay(transform.position, transform.forward * 8, Color.red);
             if (hit.transform.gameObject.tag == "enemies")
             {
+                StartCoroutine("thrownball");
+                //if (Time.deltaTime > timeball)
+                //{
+                //    Debug.Log("nem bong");
+                //    GameObject ball = Instantiate(Ball, Ballpos);
+                //    Rigidbody ballrigi = ball.GetComponent<Rigidbody>();
+                //    ballrigi.AddForce(Vector3.forward * 3 * Time.deltaTime);
+                //    timeball = Time.deltaTime + 2f;
+                //}
+                //timeball = Time.deltaTime + 2f;
                 anim.SetBool("IsRun", false);
                 anim.SetBool("IsNem", true);
                 anim.SetLayerWeight(1, 1f);
@@ -85,7 +101,7 @@ public class PlayerManager : MonoBehaviour
         {
             mousePos = cameramain.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 18));
             float xDiff = mousePos.x - lastMouPos.x;
-            
+
             if (thewall)
             {
                 newPosfortrans.x = localtrans.position.x;
@@ -102,18 +118,33 @@ public class PlayerManager : MonoBehaviour
                     //trai -a phai +a;
                     // dis lastmouse mouse;
                     //a- ;
-                    Debug.Log("e diff" + xDiff);
+                    //Debug.Log("e diff" + xDiff);
                     lastMouPos = mousePos;
                 }
 
                 if (xDiff >= 0 && xDiff < 0.1f)
                     transform.rotation = Quaternion.Euler(0, 30, 0);
                 if (xDiff < 0 && xDiff > -0.1f)
-                    transform.rotation = Quaternion.Euler(0, -30, 0);               
-               
+                    transform.rotation = Quaternion.Euler(0, -30, 0);
+
             }
-            
+
         }
+        //if (!thewall)
+        //{
+
+        //    if (Input.touchCount > 0)
+        //    {
+        //        Debug.Log("hehehe");
+        //        touch = Input.GetTouch(0);
+        //        if (touch.phase == TouchPhase.Moved)
+        //        {
+        //            transform.position = new Vector3(transform.position.x + touch.deltaPosition.x * speedleftright, transform.position.y, transform.position.z);
+
+        //        }
+
+        //    }
+        //}
         if (therotation == true)
         {
             if (Input.GetMouseButtonUp(0))
@@ -121,7 +152,7 @@ public class PlayerManager : MonoBehaviour
         }
 
         if (transform.position.y >= 1f)
-        {
+        {   
             speed = 15f;
             anim.SetLayerWeight(1, 0f);
             anim.SetBool("IsRun", true);
@@ -156,7 +187,7 @@ public class PlayerManager : MonoBehaviour
         {
             therotation = false;
             transform.rotation = Quaternion.Euler(0, 0, 0);
-            lastMouPos = Vector3.zero;
+           
             transform.position = new Vector3(transform.position.x, transform.position.y, Mathf.MoveTowards(transform.position.z, 1000, speed * Time.deltaTime));
             Cameractl.CameractlIstance.rotationcamera = true;
             Cameractl.CameractlIstance.right = true;
@@ -172,7 +203,7 @@ public class PlayerManager : MonoBehaviour
         {
             therotation = false;
             transform.rotation = Quaternion.Euler(0, 0, 0);
-            lastMouPos = Vector3.zero;
+            
             Cameractl.CameractlIstance.rotationcamera = true;
             transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x + -3.6f, transform.position.y + 1.2f, transform.position.z), 50 * Time.deltaTime);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0f, 0f, -25f), 50f * Time.deltaTime);
@@ -194,7 +225,7 @@ public class PlayerManager : MonoBehaviour
         {   
             
             Destroy(other.gameObject);
-            Cameractl.CameractlIstance.Camerain();
+            Cameractl.CameractlIstance.flash=true;
             player = transform.position;
             distance = 500;
             transform.position = new Vector3(transform.position.x + 500f, transform.position.y, transform.position.z);
@@ -204,6 +235,7 @@ public class PlayerManager : MonoBehaviour
         {
             distance = 0;
             transform.position = player;
+            Cameractl.CameractlIstance.flash = true;
         }
         if (other.transform.tag == "Finish")
         {
@@ -223,20 +255,20 @@ public class PlayerManager : MonoBehaviour
         if (other.tag == "road_1")
         {
             transform.rotation = Quaternion.Euler(0, 0, 0);
-            lastMouPos = Vector3.zero;
+            //lastMouPos = Vector3.zero;
             MovePaval(pathvalGameObject);
         }
         if (other.tag == "road_2_1")
         {
             transform.rotation = Quaternion.Euler(0, 0, 0);
-            lastMouPos = Vector3.zero;
+            //lastMouPos = Vector3.zero;
             mousePos = Vector3.zero;
             MovePaval(pavalroad2_1);
 
         }
         if (other.tag == "road_2_2")
         { transform.rotation = Quaternion.Euler(0, 0, 0);
-            lastMouPos =Vector3.zero;
+            //lastMouPos =Vector3.zero;
             mousePos = Vector3.zero;
 
             MovePaval(pavalroad2_2);
@@ -256,15 +288,25 @@ public class PlayerManager : MonoBehaviour
       
 
     }
+     IEnumerator thrownball()
+    {
+        yield return new WaitForSeconds(1f);
+        GameObject ball =Instantiate(Ball,Ballpos.position,Ballpos.rotation);
+        Rigidbody ballrigi = ball.GetComponent<Rigidbody>();
+        ballrigi.AddForce(Vector3.forward * 3 * Time.deltaTime);
+        gameObject.SetActive(true);
+
+
+    }
     //public void MoveAI(Transform des)
     //{
     //    Debug.Log(des.localPosition);
     //    Vector3 tar = des.position;
     //    tar.y = transform.position.y;
-        
+
     //    Debug.Log(agent.SetDestination(tar));
     //    StartCoroutine(WaitComplete());
-        
+
     //}
     //private IEnumerator WaitComplete()
     //{
@@ -273,9 +315,9 @@ public class PlayerManager : MonoBehaviour
     //    Debug.Log(agent.pathStatus);
     //    agent.enabled = false;
     //    Move = true;
-        
+
     //}
-    
+
     public void ToListVector(GameObject[] pavalpoint)
     {
         for (int i = 0; i < pathvalGameObject.Length; i++)
