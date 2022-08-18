@@ -11,7 +11,7 @@ public class PlayerManager : MonoBehaviour
     private float distance =0;
     private Vector3 player;
 
-    private int lv;
+    public int lvPlayer;
     public Text textlv;
 
     public Camera cameramain;
@@ -30,7 +30,7 @@ public class PlayerManager : MonoBehaviour
 
     public bool Move = true;
 
-    private Animator anim;
+    public Animator anim;
 
     Rigidbody rigidbody;
 
@@ -53,7 +53,7 @@ public class PlayerManager : MonoBehaviour
     {
         therotation = true;
         localtrans = GetComponent<Transform>();
-        textlv.text = "Lv " + lv.ToString();
+        textlv.text = "Lv " + lvPlayer.ToString();
         thewall = false;
     }
     void Update()
@@ -73,20 +73,13 @@ public class PlayerManager : MonoBehaviour
         {         
             Debug.DrawRay(transform.position, transform.forward * 8, Color.red);
             if (hit.transform.gameObject.tag == "enemies")
-            {
-                StartCoroutine("thrownball");
-                //if (Time.deltaTime > timeball)
-                //{
-                //    Debug.Log("nem bong");
-                //    GameObject ball = Instantiate(Ball, Ballpos);
-                //    Rigidbody ballrigi = ball.GetComponent<Rigidbody>();
-                //    ballrigi.AddForce(Vector3.forward * 3 * Time.deltaTime);
-                //    timeball = Time.deltaTime + 2f;
-                //}
-                //timeball = Time.deltaTime + 2f;
+            {   
+                //StartCoroutine("thrownball");
+                Thrown();
                 anim.SetBool("IsRun", false);
                 anim.SetBool("IsNem", true);
                 anim.SetLayerWeight(1, 1f);
+                Debug.Log("lv Player" + lvPlayer);
             }
 
         }
@@ -151,14 +144,14 @@ public class PlayerManager : MonoBehaviour
                 transform.rotation = Quaternion.Euler(0, 0, 0);
         }
 
-        if (transform.position.y >= 1f)
-        {   
-            speed = 15f;
-            anim.SetLayerWeight(1, 0f);
-            anim.SetBool("IsRun", true);
-            anim.SetBool("IsJump", false);
-        }
-        if (transform.position.y < -0.3)
+        //if (transform.position.y <= 3933802f&& transform.position.y >= -0.2f)
+        //{
+        //    speed = 15f;
+        //    anim.SetLayerWeight(1, 0f);
+        //    anim.SetBool("IsRun", true);
+        //    anim.SetBool("IsJump", false);
+        //}
+        if (transform.position.y < -0.2f)
         {
             gameObject.SetActive(false);
             MenuManager.MenuManagerIstance.GameStace = false;
@@ -196,8 +189,6 @@ public class PlayerManager : MonoBehaviour
             rigidbody.isKinematic = true;
             thewall = true;
             
-
-
         }
         if (other.tag == "Lo_xo_left")
         {
@@ -241,17 +232,7 @@ public class PlayerManager : MonoBehaviour
         {
             Debug.Log("kakakaka");
 
-        }
-        //if (other.tag == "road_1")
-        //{
-        //    agent.enabled=true;
-        //    Move = false;
-        //    Debug.Log(other.name);
-        //    Transform des;
-        //    des = other.transform.GetChild(1);
-        //    MoveAI(des);
-        //    //Move = true;
-        //}
+        }        
         if (other.tag == "road_1")
         {
             transform.rotation = Quaternion.Euler(0, 0, 0);
@@ -274,50 +255,46 @@ public class PlayerManager : MonoBehaviour
             MovePaval(pavalroad2_2);
 
         }
-
-    }
-    private void OnTriggerExit(Collider other)
-    {
         if (other.transform.tag == "enemies")
         {
-
-            lv++;
             anim.SetLayerWeight(1, 0f);
-            textlv.text = "Lv " + lv.ToString();
+            textlv.text = "Lv " + lvPlayer.ToString();
         }
-      
-
+        if (other.tag == "Plane")
+        {
+            Debug.Log("dang chay");
+        }
+     
     }
-     IEnumerator thrownball()
+    private void OnCollisionEnter(Collision collision)
     {
-        yield return new WaitForSeconds(1f);
-        GameObject ball =Instantiate(Ball,Ballpos.position,Ballpos.rotation);
-        Rigidbody ballrigi = ball.GetComponent<Rigidbody>();
-        ballrigi.AddForce(Vector3.forward * 3 * Time.deltaTime);
-        gameObject.SetActive(true);
-
-
+        if (collision.transform.tag == "Plane")
+        {
+            speed = 15f;
+            anim.SetLayerWeight(1, 0f);
+            anim.SetBool("IsRun", true);
+            anim.SetBool("IsJump", false);
+        }
     }
-    //public void MoveAI(Transform des)
+    //private void OnTriggerExit(Collider other)
     //{
-    //    Debug.Log(des.localPosition);
-    //    Vector3 tar = des.position;
-    //    tar.y = transform.position.y;
-
-    //    Debug.Log(agent.SetDestination(tar));
-    //    StartCoroutine(WaitComplete());
+    //    if (other.transform.tag == "enemies")
+    //    {
+    //        anim.SetLayerWeight(1, 0f);
+    //        textlv.text = "Lv " + lvPlayer.ToString();
+    //    }
 
     //}
-    //private IEnumerator WaitComplete()
+    // IEnumerator thrownball()
     //{
-    //    yield return null;
-    //    yield return new WaitUntil(() => agent.remainingDistance ==0);
-    //    Debug.Log(agent.pathStatus);
-    //    agent.enabled = false;
-    //    Move = true;
+    //    yield return new WaitForSeconds(1f);
+    //    GameObject ball =Instantiate(Ball,Ballpos.position,Ballpos.rotation);
+    //    Rigidbody ballrigi = ball.GetComponent<Rigidbody>();
+    //    ballrigi.AddForce(Vector3.forward * 3 * Time.deltaTime);
+    //    gameObject.SetActive(true);
+
 
     //}
-
     public void ToListVector(GameObject[] pavalpoint)
     {
         for (int i = 0; i < pathvalGameObject.Length; i++)
@@ -337,11 +314,24 @@ public class PlayerManager : MonoBehaviour
             rigidbody.isKinematic = false;
         });
     }
+    public void Thrown()
+    {
+        if (Time.deltaTime > timeball)
+        {
+            Debug.Log("nem bong");
+            GameObject ball = Instantiate(Ball, Ballpos.position,Quaternion.identity);
+            Rigidbody ballrigi = ball.GetComponent<Rigidbody>();
+            //ballrigi.AddForce(Vector3.forward *15 * Time.deltaTime);
+            ballrigi.AddForceAtPosition(Vector3.forward * 15 * Time.deltaTime, ball.transform.position);
+            
+        }
+        timeball = Time.deltaTime + 0.2f;
+    }
 
-   
-    
-        
-    
+
+
+
+
 }
 
 

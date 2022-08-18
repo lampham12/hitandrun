@@ -17,6 +17,12 @@ TagManager:
   - Cube
   - lv10
   - Win
+  - Lo_xo_right
+  - Lo_xo_left
+  - road_2_1
+  - road_2_2
+  - road_1
+  - Plane
   layers:
   - Default
   - TransparentFX

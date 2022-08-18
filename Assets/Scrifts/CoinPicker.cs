@@ -19,7 +19,7 @@ public class CoinPicker : MonoBehaviour
         {         
             coins++;          
             Destroy(other.gameObject);
-            Debug.Log("coins" + coins);
+            //Debug.Log("coins" + coins);
             textcoins.text = "Coins :" + coins.ToString();
             
         }
