@@ -15,7 +15,6 @@ public class PlayerManager : MonoBehaviour
     public Text textlv;
 
     public Camera cameramain;
-    public GameObject Ball;
     public Transform Ballpos;
     private float timeball;
 
@@ -67,22 +66,34 @@ public class PlayerManager : MonoBehaviour
 
         var ray = new Ray(transform.position, transform.forward);
         RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, 8
+        
+        if (Physics.Raycast(ray, out hit,12 
             ))
         {         
-            Debug.DrawRay(transform.position, transform.forward * 8, Color.red);
+            Debug.DrawRay(transform.position, transform.forward * 12, Color.red);
             if (hit.transform.gameObject.tag == "enemies")
-            {   
+            {
                 //StartCoroutine("thrownball");
-                Thrown();
-                anim.SetBool("IsRun", false);
-                anim.SetBool("IsNem", true);
-                anim.SetLayerWeight(1, 1f);
-                Debug.Log("lv Player" + lvPlayer);
+                Enemies shot = hit.transform.gameObject.GetComponent<Enemies>();
+                if (!shot.shotted)
+                {
+                    Pool_manager.Pool_managerInstance.spawnpool_enemy("bong", Ballpos,hit.point);
+                    anim.SetLayerWeight(1, 1f);
+                    Debug.Log("lv Player" + lvPlayer);
+                    shot.shotted = true;
+                }
             }
+            //if(hit.transform==null) 
+            //{ 
+            //    anim.SetLayerWeight(1, 0f);
+            //    textlv.text = "Lv " + lvPlayer.ToString();
+            //    Debug.Log("ngung ban");
+            //}
+
 
         }
+        else
+            anim.SetLayerWeight(1, 0f);
 
     }
     public void MovePlayer()
@@ -115,10 +126,10 @@ public class PlayerManager : MonoBehaviour
                     lastMouPos = mousePos;
                 }
 
-                if (xDiff >= 0 && xDiff < 0.1f)
-                    transform.rotation = Quaternion.Euler(0, 30, 0);
-                if (xDiff < 0 && xDiff > -0.1f)
-                    transform.rotation = Quaternion.Euler(0, -30, 0);
+                //if (xDiff >= 0 && xDiff < 0.1f)
+                //    transform.rotation = Quaternion.Euler(0, 30, 0);
+                //if (xDiff < 0 && xDiff > -0.1f)
+                //    transform.rotation = Quaternion.Euler(0, -30, 0);
 
             }
 
@@ -144,13 +155,7 @@ public class PlayerManager : MonoBehaviour
                 transform.rotation = Quaternion.Euler(0, 0, 0);
         }
 
-        //if (transform.position.y <= 3933802f&& transform.position.y >= -0.2f)
-        //{
-        //    speed = 15f;
-        //    anim.SetLayerWeight(1, 0f);
-        //    anim.SetBool("IsRun", true);
-        //    anim.SetBool("IsJump", false);
-        //}
+       
         if (transform.position.y < -0.2f)
         {
             gameObject.SetActive(false);
@@ -260,11 +265,7 @@ public class PlayerManager : MonoBehaviour
             anim.SetLayerWeight(1, 0f);
             textlv.text = "Lv " + lvPlayer.ToString();
         }
-        if (other.tag == "Plane")
-        {
-            Debug.Log("dang chay");
-        }
-     
+       
     }
     private void OnCollisionEnter(Collision collision)
     {
@@ -276,25 +277,7 @@ public class PlayerManager : MonoBehaviour
             anim.SetBool("IsJump", false);
         }
     }
-    //private void OnTriggerExit(Collider other)
-    //{
-    //    if (other.transform.tag == "enemies")
-    //    {
-    //        anim.SetLayerWeight(1, 0f);
-    //        textlv.text = "Lv " + lvPlayer.ToString();
-    //    }
-
-    //}
-    // IEnumerator thrownball()
-    //{
-    //    yield return new WaitForSeconds(1f);
-    //    GameObject ball =Instantiate(Ball,Ballpos.position,Ballpos.rotation);
-    //    Rigidbody ballrigi = ball.GetComponent<Rigidbody>();
-    //    ballrigi.AddForce(Vector3.forward * 3 * Time.deltaTime);
-    //    gameObject.SetActive(true);
-
-
-    //}
+    
     public void ToListVector(GameObject[] pavalpoint)
     {
         for (int i = 0; i < pathvalGameObject.Length; i++)
@@ -313,24 +296,7 @@ public class PlayerManager : MonoBehaviour
             Move = true;        
             rigidbody.isKinematic = false;
         });
-    }
-    public void Thrown()
-    {
-        if (Time.deltaTime > timeball)
-        {
-            Debug.Log("nem bong");
-            GameObject ball = Instantiate(Ball, Ballpos.position,Quaternion.identity);
-            Rigidbody ballrigi = ball.GetComponent<Rigidbody>();
-            //ballrigi.AddForce(Vector3.forward *15 * Time.deltaTime);
-            ballrigi.AddForceAtPosition(Vector3.forward * 15 * Time.deltaTime, ball.transform.position);
-            
-        }
-        timeball = Time.deltaTime + 0.2f;
-    }
-
-
-
-
+    }  
 
 }
 
