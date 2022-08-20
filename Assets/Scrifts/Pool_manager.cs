@@ -54,20 +54,20 @@ public class Pool_manager : MonoBehaviour
     //}
     public void spawnpool_enemy(string name, Transform posBullet,Vector3 hit)
         {
-    //    if (Time.time > thoigian)
-    //    {
-            
+        if (Time.time > thoigian)
+        {
+
             GameObject objspam = pooldictionary[name].Dequeue();
             objspam.SetActive(true);
             objspam.transform.position = posBullet.position;
             rg = objspam.GetComponent<Rigidbody>();
-             Vector3.MoveTowards(objspam.transform.position, hit,1 );
-        //rg.AddForce(posBullet.transform.forward * 2500);
-        pooldictionary[name].Enqueue(objspam);
-        //    thoigian = Time.time + 0.1f;
-        //}
-        
+            objspam.transform.position = Vector3.MoveTowards(objspam.transform.position, hit, 500 * Time.deltaTime);
+            rg.AddForce(posBullet.transform.forward * 2500);
+            pooldictionary[name].Enqueue(objspam);
+            thoigian = Time.time + 0.01f;
+        }
+
     }
-    
+
 }
 

@@ -67,16 +67,17 @@ public class PlayerManager : MonoBehaviour
         var ray = new Ray(transform.position, transform.forward);
         RaycastHit hit;
         
-        if (Physics.Raycast(ray, out hit,12 
+        if (Physics.Raycast(ray, out hit,15 
             ))
         {         
-            Debug.DrawRay(transform.position, transform.forward * 12, Color.red);
+            Debug.DrawRay(transform.position, transform.forward * 15, Color.red);
             if (hit.transform.gameObject.tag == "enemies")
             {
                 //StartCoroutine("thrownball");
                 Enemies shot = hit.transform.gameObject.GetComponent<Enemies>();
                 if (!shot.shotted)
                 {
+                    Debug.Log("hit" + hit.point);
                     Pool_manager.Pool_managerInstance.spawnpool_enemy("bong", Ballpos,hit.point);
                     anim.SetLayerWeight(1, 1f);
                     Debug.Log("lv Player" + lvPlayer);
@@ -154,14 +155,15 @@ public class PlayerManager : MonoBehaviour
             if (Input.GetMouseButtonUp(0))
                 transform.rotation = Quaternion.Euler(0, 0, 0);
         }
-
        
-        if (transform.position.y < -0.2f)
+        if (transform.position.y < 0f)
         {
             gameObject.SetActive(false);
             MenuManager.MenuManagerIstance.GameStace = false;
             MenuManager.MenuManagerIstance.YouLose.gameObject.SetActive(true);
         }
+
+
     }
 
    
@@ -174,12 +176,11 @@ public class PlayerManager : MonoBehaviour
     {
         if (other.transform.tag == "Lo_xo")
         {
-            rigidbody.velocity = new Vector3(0, 8.5f, 0);
-            speed = speed * 1.2f;
+            rigidbody.velocity = new Vector3(0, 8.5f, -5);
             Debug.Log("aaaa");
             anim.SetBool("IsJump", true);
             anim.SetBool("IsRun", false);
-
+           
         }
         if (other.transform.tag == "Lo_xo_right")
         {
@@ -267,6 +268,15 @@ public class PlayerManager : MonoBehaviour
         }
        
     }
+    //private void OnTriggerExit(Collider other)
+    //{
+    //    if (other.transform.tag == "Lo_xo")
+    //    {
+            
+    //        anim.SetBool("IsJump", false);
+           
+    //    }
+    //}
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.transform.tag == "Plane")
@@ -275,6 +285,14 @@ public class PlayerManager : MonoBehaviour
             anim.SetLayerWeight(1, 0f);
             anim.SetBool("IsRun", true);
             anim.SetBool("IsJump", false);
+        }
+        if(collision.transform.tag== "Lo_xo")
+        {
+            rigidbody.velocity = new Vector3(0, 8.5f, -5);
+            Debug.Log("aaaa");
+            anim.SetBool("IsJump", true);
+            anim.SetBool("IsRun", false);
+
         }
     }
     
