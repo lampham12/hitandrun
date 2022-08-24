@@ -4,22 +4,14 @@ using UnityEngine;
 
 public class Bullet_pool : MonoBehaviour
 {
-    public float timedestroy;
     Transform vitri;
-
+    private Transform spawnPos;
+    private Transform targetPos;
     private void OnEnable()
     {
-        transform.GetComponent<Rigidbody>().WakeUp();
-        Invoke("hidepullet", timedestroy);
-    }
-    private void hidepullet()
-    {
-        gameObject.SetActive(false);
     }
     private void OnDisable()
     {
-        transform.GetComponent<Rigidbody>().Sleep();
-        CancelInvoke();
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -37,6 +29,18 @@ public class Bullet_pool : MonoBehaviour
         //}
 
     }
+    public void Init(Transform spawnPos, Transform targetPos)
+    {
+        //Debug.LogError("spawn");
+        this.spawnPos = spawnPos;
+        this.targetPos = targetPos;
+        transform.position = spawnPos.position;
+        transform.gameObject.SetActive(true);
+    }
+    public void Move()
+    {
+        transform.position = Vector3.MoveTowards(transform.position, Vector3.Lerp(transform.position, targetPos.transform.position, 0.5f), 0.3f);
+    }
     void Start()
     {
 
@@ -45,6 +49,11 @@ public class Bullet_pool : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Debug.LogError("update");
 
+        if (targetPos != null)
+        {
+            Move();
+        }
     }
 }

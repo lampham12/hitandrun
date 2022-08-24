@@ -17,7 +17,7 @@ public class Pool_manager : MonoBehaviour
 
     public static Pool_manager Pool_managerInstance;
     public List<Pool> _pool;
-    Dictionary<string, Queue<GameObject>> pooldictionary;
+    Dictionary<string, Queue<Bullet_pool>> pooldictionary;
     float thoigian = 0f;
 
     private void Awake()
@@ -26,17 +26,17 @@ public class Pool_manager : MonoBehaviour
     }
     void Start()
     {
-        pooldictionary = new Dictionary<string, Queue<GameObject>>();
+        pooldictionary = new Dictionary<string, Queue<Bullet_pool>>();
 
         foreach (Pool pool in _pool)
         {
-            Queue<GameObject> objectpool = new Queue<GameObject>();
+            Queue<Bullet_pool> objectpool = new Queue<Bullet_pool>();
 
             for (int i = 0; i < pool.size; i++)
             {
-                GameObject obj = Instantiate(pool.doituong);
-                obj.SetActive(false);
-                objectpool.Enqueue(obj);
+                Bullet_pool bullet = Instantiate(pool.doituong).GetComponent<Bullet_pool>();
+                bullet.gameObject.SetActive(false);
+                objectpool.Enqueue(bullet);
             }
             pooldictionary.Add(pool.name, objectpool);
         }
@@ -52,21 +52,17 @@ public class Pool_manager : MonoBehaviour
     //    pooldictionary[name].Enqueue(objspam);
 
     //}
-    public void spawnpool_enemy(string name, Transform posBullet,Vector3 hit)
+    
+    public void spawnpool_enemy(string name, Transform posBullet,GameObject hit)
         {
-        if (Time.time > thoigian)
+        //Debug.LogError("HIt pos" + hit.transform.position);
+        if (Time.time >= thoigian)
         {
-
-            GameObject objspam = pooldictionary[name].Dequeue();
-            objspam.SetActive(true);
-            objspam.transform.position = posBullet.position;
-            rg = objspam.GetComponent<Rigidbody>();
-            objspam.transform.position = Vector3.MoveTowards(objspam.transform.position, hit, 500 * Time.deltaTime);
-            rg.AddForce(posBullet.transform.forward * 2500);
-            pooldictionary[name].Enqueue(objspam);
-            thoigian = Time.time + 0.01f;
+            Bullet_pool bullet = pooldictionary[name].Dequeue();
+            bullet.Init(posBullet, hit.transform);
+            pooldictionary[name].Enqueue(bullet);
+            thoigian = Time.time + 0.02f;
         }
-
     }
 
 }

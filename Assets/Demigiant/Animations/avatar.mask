@@ -14,17 +14,17 @@ AvatarMask:
   - m_Path: boy_throw:Body
     m_Weight: 1
   - m_Path: boy_throw:Body/boy_throw:hero_body_0
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: boy_throw:Body/boy_throw:hero_hair_full
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: boy_throw:Body/boy_throw:mixamorig:HeadTop_End
     m_Weight: 0
   - m_Path: boy_throw:locator1
     m_Weight: 1
   - m_Path: boy_throw:locator1/boy_throw:pSphere1
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: boy_throw:mixamorig:Hips
-    m_Weight: 1
+    m_Weight: 0
   - m_Path: boy_throw:mixamorig:Hips/boy_throw:mixamorig:LeftUpLeg
     m_Weight: 0
   - m_Path: boy_throw:mixamorig:Hips/boy_throw:mixamorig:LeftUpLeg/boy_throw:mixamorig:LeftLeg

@@ -73,16 +73,15 @@ public class PlayerManager : MonoBehaviour
             Debug.DrawRay(transform.position, transform.forward * 15, Color.red);
             if (hit.transform.gameObject.tag == "enemies")
             {
-                //StartCoroutine("thrownball");
                 Enemies shot = hit.transform.gameObject.GetComponent<Enemies>();
                 if (!shot.shotted)
                 {
-                    Debug.Log("hit" + hit.point);
-                    Pool_manager.Pool_managerInstance.spawnpool_enemy("bong", Ballpos,hit.point);
-                    anim.SetLayerWeight(1, 1f);
-                    Debug.Log("lv Player" + lvPlayer);
+                    //Debug.LogError("hit pos test1" + hit.transform.position);
+                    //Debug.Log("timedelta" + Time.deltaTime);
+                    Pool_manager.Pool_managerInstance.spawnpool_enemy("bong", Ballpos,hit.transform.gameObject);                 
                     shot.shotted = true;
                 }
+                anim.SetLayerWeight(1, 1f);
             }
             //if(hit.transform==null) 
             //{ 
@@ -135,27 +134,22 @@ public class PlayerManager : MonoBehaviour
             }
 
         }
-        //if (!thewall)
-        //{
-
-        //    if (Input.touchCount > 0)
-        //    {
-        //        Debug.Log("hehehe");
-        //        touch = Input.GetTouch(0);
-        //        if (touch.phase == TouchPhase.Moved)
-        //        {
-        //            transform.position = new Vector3(transform.position.x + touch.deltaPosition.x * speedleftright, transform.position.y, transform.position.z);
-
-        //        }
-
-        //    }
-        //}
-        if (therotation == true)
+        if (!thewall)
         {
-            if (Input.GetMouseButtonUp(0))
-                transform.rotation = Quaternion.Euler(0, 0, 0);
+
+            if (Input.touchCount > 0)
+            {
+                Debug.Log("hehehe");
+                touch = Input.GetTouch(0);
+                if (touch.phase == TouchPhase.Moved)
+                {
+                    transform.position = new Vector3(transform.position.x + touch.deltaPosition.x * speedleftright, transform.position.y, transform.position.z);
+
+                }
+
+            }
         }
-       
+
         if (transform.position.y < 0f)
         {
             gameObject.SetActive(false);
