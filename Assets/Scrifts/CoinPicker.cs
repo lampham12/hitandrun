@@ -13,15 +13,26 @@ public class CoinPicker : MonoBehaviour
     {
         textcoins.text = "Coins :" + coins.ToString();
     }
-    private void OnTriggerEnter(Collider other)
+    //private void OnTriggerEnter(Collider other)
+    //{
+    //    if (other.transform.tag == "coins")
+    //    {         
+    //        coins++;          
+    //        Destroy(other.gameObject);
+    //        //Debug.Log("coins" + coins);
+    //        textcoins.text = "Coins :" + coins.ToString();
+
+    //    }
+    //}
+    private void OnCollisionEnter(Collision collision)
     {
-        if (other.transform.tag == "coins")
-        {         
-            coins++;          
-            Destroy(other.gameObject);
+        if (collision.transform.tag == "coins")
+        {
+            
+            coins++;
+            Destroy(collision.gameObject);
             //Debug.Log("coins" + coins);
             textcoins.text = "Coins :" + coins.ToString();
-            
         }
     }
 }

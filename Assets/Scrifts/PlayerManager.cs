@@ -16,7 +16,6 @@ public class PlayerManager : MonoBehaviour
 
     public Camera cameramain;
     public Transform Ballpos;
-    private float timeball;
 
     public float speed ;
     public float swipespees ;
@@ -29,7 +28,8 @@ public class PlayerManager : MonoBehaviour
 
     public bool Move = true;
 
-    public Animator anim;
+    public
+        Animator anim;
 
     Rigidbody rigidbody;
 
@@ -60,6 +60,7 @@ public class PlayerManager : MonoBehaviour
         transform.position = new Vector3((Mathf.Clamp(transform.position.x, distance - 3.5f, distance + 3.5f)), transform.position.y, transform.position.z);
         if (MenuManager.MenuManagerIstance.GameStace && Move)
         {
+            textlv.text = "Lv " + lvPlayer.ToString();
             transform.position = new Vector3(transform.position.x, transform.position.y, Mathf.MoveTowards(transform.position.z, 1000, speed * Time.deltaTime));
             MovePlayer();
         }
@@ -67,21 +68,24 @@ public class PlayerManager : MonoBehaviour
         var ray = new Ray(transform.position, transform.forward);
         RaycastHit hit;
         
-        if (Physics.Raycast(ray, out hit,15 
+        if (Physics.Raycast(ray, out hit,13 
             ))
         {         
-            Debug.DrawRay(transform.position, transform.forward * 15, Color.red);
+            Debug.DrawRay(transform.position, transform.forward * 13, Color.red);
             if (hit.transform.gameObject.tag == "enemies")
             {
                 Enemies shot = hit.transform.gameObject.GetComponent<Enemies>();
+                
                 if (!shot.shotted)
                 {
-                    //Debug.LogError("hit pos test1" + hit.transform.position);
-                    //Debug.Log("timedelta" + Time.deltaTime);
-                    Pool_manager.Pool_managerInstance.spawnpool_enemy("bong", Ballpos,hit.transform.gameObject);                 
-                    shot.shotted = true;
+                    if (lvPlayer >= shot.lvenemies)
+                    {
+                        Pool_manager.Pool_managerInstance.spawnpool_enemy("bong", Ballpos, hit.transform.gameObject);
+                        shot.shotted = true;
+                    }
+                    anim.SetLayerWeight(1, 1f);
                 }
-                anim.SetLayerWeight(1, 1f);
+                
             }
             //if(hit.transform==null) 
             //{ 
@@ -156,11 +160,44 @@ public class PlayerManager : MonoBehaviour
             MenuManager.MenuManagerIstance.GameStace = false;
             MenuManager.MenuManagerIstance.YouLose.gameObject.SetActive(true);
         }
-
-
+        if (lvPlayer <= 0)
+        {
+            gameObject.SetActive(false);
+            MenuManager.MenuManagerIstance.GameStace = false;
+            MenuManager.MenuManagerIstance.YouLose.gameObject.SetActive(true);
+        }
+        if (lvPlayer>0&& lvPlayer <= 100)
+        {
+            transform.localScale =new Vector3(30,30,30);//scale0%
+            speed = 14;
+        }
+        if (lvPlayer > 100&&lvPlayer<=200)
+        {
+            transform.localScale = new Vector3(33, 33, 33);//scale 10%
+            speed = 15;
+        }
+        if (lvPlayer > 200&&lvPlayer<=300)
+        {
+            transform.localScale = new Vector3(36, 36, 36);//scale 20%
+            speed = 16;
+        }
+        if (lvPlayer > 300&&lvPlayer<=400)
+        {
+            transform.localScale = new Vector3(39, 39, 39); //scale 30%
+            speed = 17;
+        }
+        if (lvPlayer > 400 && lvPlayer <= 500)
+        {
+            transform.localScale = new Vector3(42, 42, 42); //scale 40%
+            speed = 18;
+        }
+        if(lvPlayer>500)
+        {
+            transform.localScale = new Vector3(45, 45, 45);//scale  50%
+            speed = 19;
+        }
     }
 
-   
     public void PlayRun()
     {
         anim.SetBool("IsRun", true);
@@ -230,7 +267,7 @@ public class PlayerManager : MonoBehaviour
         }
         if (other.transform.tag == "Finish")
         {
-            Debug.Log("kakakaka");
+          
 
         }        
         if (other.tag == "road_1")
@@ -255,22 +292,9 @@ public class PlayerManager : MonoBehaviour
             MovePaval(pavalroad2_2);
 
         }
-        if (other.transform.tag == "enemies")
-        {
-            anim.SetLayerWeight(1, 0f);
-            textlv.text = "Lv " + lvPlayer.ToString();
-        }
        
     }
-    //private void OnTriggerExit(Collider other)
-    //{
-    //    if (other.transform.tag == "Lo_xo")
-    //    {
-            
-    //        anim.SetBool("IsJump", false);
-           
-    //    }
-    //}
+   
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.transform.tag == "Plane")

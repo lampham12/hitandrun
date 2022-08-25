@@ -9,22 +9,32 @@ public class Enemies : MonoBehaviour
 
     private void Start()
     {
-        shotted= false;
+        shotted = false;
     }
 
     void OnTriggerEnter(Collider other)
     {
 
+        if (other.gameObject.tag == "Ball")
+        {
+            if (PlayerManager.PlayerManagerIstance.lvPlayer >= lvenemies)
+                PlayerManager.PlayerManagerIstance.lvPlayer = PlayerManager.PlayerManagerIstance.lvPlayer + lvenemies;
+            else
+                PlayerManager.PlayerManagerIstance.lvPlayer -= 10;
+            shotted = true;
+        }
         if (other.gameObject.tag == "Player")
         {
-            
-            PlayerManager.PlayerManagerIstance.lvPlayer = PlayerManager.PlayerManagerIstance.lvPlayer+ lvenemies;
-            //Destroy(gameObject);
-            //foreach (Transform i in transform)
-            //{
-            //    i.gameObject.SetActive(false);
-            //}
+            if (PlayerManager.PlayerManagerIstance.lvPlayer < lvenemies)
+            {
+                other.gameObject.SetActive(false);
+                MenuManager.MenuManagerIstance.GameStace = false;
+                MenuManager.MenuManagerIstance.YouLose.gameObject.SetActive(true);
+            }
         }
-    }
 
+
+
+    }
+   
 }

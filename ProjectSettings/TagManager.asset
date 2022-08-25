@@ -23,6 +23,7 @@ TagManager:
   - road_2_2
   - road_1
   - Plane
+  - Ball
   layers:
   - Default
   - TransparentFX
