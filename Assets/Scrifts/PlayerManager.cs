@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-using UnityEngine.AI;
+
 
 public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager PlayerManagerIstance;
-    private float distance =0;
+    private float distance = 0;
     private Vector3 player;
 
     public int lvPlayer;
@@ -17,30 +17,29 @@ public class PlayerManager : MonoBehaviour
     public Camera cameramain;
     public Transform Ballpos;
 
-    public float speed ;
-    public float swipespees ;
+    public float speed;
+    public float swipespees;
     private Transform localtrans;
     public Vector3 lastMouPos;
     private Vector3 mousePos;
     private Vector3 newPosfortrans;
     private Touch touch;
-    private float speedleftright=0.014f;
+    private float speedleftright = 0.016f;
 
     public bool Move = true;
-
-    public
-        Animator anim;
+    public Animator anim;
 
     Rigidbody rigidbody;
 
     public PathType pathsystem = PathType.Linear;
-    public GameObject[] pathvalGameObject = new GameObject[8];
     private Vector3[] pathval = new Vector3[8];
-    public GameObject[] pavalroad2_1 = new GameObject[8];
-    public GameObject[] pavalroad2_2 = new GameObject[8];
+    private GameObject[] pathval_ = new GameObject[8];
+    private List<GameObject> listpoint = new List<GameObject>();
+    private List<Vector3> listvector = new List<Vector3>();
+
 
     public bool therotation = true;
-    public bool thewall =false;
+    public bool thewall = false;
 
     private void Awake()
     {
@@ -57,6 +56,7 @@ public class PlayerManager : MonoBehaviour
     }
     void Update()
     {
+        Debug.Log("kakakka");
         transform.position = new Vector3((Mathf.Clamp(transform.position.x, distance - 3.5f, distance + 3.5f)), transform.position.y, transform.position.z);
         if (MenuManager.MenuManagerIstance.GameStace && Move)
         {
@@ -67,33 +67,28 @@ public class PlayerManager : MonoBehaviour
 
         var ray = new Ray(transform.position, transform.forward);
         RaycastHit hit;
-        
-        if (Physics.Raycast(ray, out hit,13 
+
+        if (Physics.Raycast(ray, out hit, 13
             ))
-        {         
+        {
             Debug.DrawRay(transform.position, transform.forward * 13, Color.red);
             if (hit.transform.gameObject.tag == "enemies")
             {
                 Enemies shot = hit.transform.gameObject.GetComponent<Enemies>();
-                
+                Collider rgenemies = hit.transform.gameObject.GetComponent<Collider>();
                 if (!shot.shotted)
                 {
                     if (lvPlayer >= shot.lvenemies)
                     {
+                        rgenemies.isTrigger = true;
                         Pool_manager.Pool_managerInstance.spawnpool_enemy("bong", Ballpos, hit.transform.gameObject);
                         shot.shotted = true;
+                        anim.SetLayerWeight(1, 1f);
                     }
-                    anim.SetLayerWeight(1, 1f);
-                }
-                
-            }
-            //if(hit.transform==null) 
-            //{ 
-            //    anim.SetLayerWeight(1, 0f);
-            //    textlv.text = "Lv " + lvPlayer.ToString();
-            //    Debug.Log("ngung ban");
-            //}
 
+                }
+
+            }
 
         }
         else
@@ -102,8 +97,6 @@ public class PlayerManager : MonoBehaviour
     }
     public void MovePlayer()
     {
-
-        
         PlayRun();
         if (Input.GetMouseButton(0))
         {
@@ -166,22 +159,22 @@ public class PlayerManager : MonoBehaviour
             MenuManager.MenuManagerIstance.GameStace = false;
             MenuManager.MenuManagerIstance.YouLose.gameObject.SetActive(true);
         }
-        if (lvPlayer>0&& lvPlayer <= 100)
+        if (lvPlayer > 0 && lvPlayer <= 100)
         {
-            transform.localScale =new Vector3(30,30,30);//scale0%
+            transform.localScale = new Vector3(30, 30, 30);//scale0%
             speed = 14;
         }
-        if (lvPlayer > 100&&lvPlayer<=200)
+        if (lvPlayer > 100 && lvPlayer <= 200)
         {
             transform.localScale = new Vector3(33, 33, 33);//scale 10%
             speed = 15;
         }
-        if (lvPlayer > 200&&lvPlayer<=300)
+        if (lvPlayer > 200 && lvPlayer <= 300)
         {
             transform.localScale = new Vector3(36, 36, 36);//scale 20%
             speed = 16;
         }
-        if (lvPlayer > 300&&lvPlayer<=400)
+        if (lvPlayer > 300 && lvPlayer <= 400)
         {
             transform.localScale = new Vector3(39, 39, 39); //scale 30%
             speed = 17;
@@ -191,7 +184,7 @@ public class PlayerManager : MonoBehaviour
             transform.localScale = new Vector3(42, 42, 42); //scale 40%
             speed = 18;
         }
-        if(lvPlayer>500)
+        if (lvPlayer > 500)
         {
             transform.localScale = new Vector3(45, 45, 45);//scale  50%
             speed = 19;
@@ -211,33 +204,33 @@ public class PlayerManager : MonoBehaviour
             Debug.Log("aaaa");
             anim.SetBool("IsJump", true);
             anim.SetBool("IsRun", false);
-           
+
         }
         if (other.transform.tag == "Lo_xo_right")
         {
             therotation = false;
             transform.rotation = Quaternion.Euler(0, 0, 0);
-           
+
             transform.position = new Vector3(transform.position.x, transform.position.y, Mathf.MoveTowards(transform.position.z, 1000, speed * Time.deltaTime));
             Cameractl.CameractlIstance.rotationcamera = true;
             Cameractl.CameractlIstance.right = true;
-            transform.position = Vector3.Lerp(transform.position,new Vector3 (transform.position.x + 3.6f, transform.position.y + 1.2f, transform.position.z),50*Time.deltaTime);
+            transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x + 3.6f, transform.position.y + 1.2f, transform.position.z), 50 * Time.deltaTime);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0f, 0f, 25f), 50f * Time.deltaTime);
             rigidbody.isKinematic = true;
             thewall = true;
-            
+
         }
         if (other.tag == "Lo_xo_left")
         {
             therotation = false;
             transform.rotation = Quaternion.Euler(0, 0, 0);
-            
+
             Cameractl.CameractlIstance.rotationcamera = true;
             transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x + -3.6f, transform.position.y + 1.2f, transform.position.z), 50 * Time.deltaTime);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0f, 0f, -25f), 50f * Time.deltaTime);
             rigidbody.isKinematic = true;
             thewall = true;
-            
+
             //transform.position = new Vector3(transform.position.x + -3.6f, transform.position.y + 1.2f, transform.position.z);
             //transform.Rotate(0, 0, -25f);
             //rigidbody.isKinematic = true;
@@ -250,10 +243,10 @@ public class PlayerManager : MonoBehaviour
 
         }
         if (other.transform.tag == "in")
-        {   
-            
+        {
+
             Destroy(other.gameObject);
-            Cameractl.CameractlIstance.flash=true;
+            Cameractl.CameractlIstance.flash = true;
             player = transform.position;
             distance = 500;
             transform.position = new Vector3(transform.position.x + 500f, transform.position.y, transform.position.z);
@@ -265,36 +258,27 @@ public class PlayerManager : MonoBehaviour
             transform.position = player;
             Cameractl.CameractlIstance.flash = true;
         }
-        if (other.transform.tag == "Finish")
-        {
-          
 
-        }        
         if (other.tag == "road_1")
         {
-            transform.rotation = Quaternion.Euler(0, 0, 0);
-            //lastMouPos = Vector3.zero;
-            MovePaval(pathvalGameObject);
+            GameObject child = other.transform.GetChild(0).gameObject;
+            toList(child);
+            MovePaval(pathval_);
         }
         if (other.tag == "road_2_1")
         {
-            transform.rotation = Quaternion.Euler(0, 0, 0);
-            //lastMouPos = Vector3.zero;
-            mousePos = Vector3.zero;
-            MovePaval(pavalroad2_1);
 
+            toList(other.gameObject);
+            MovePaval(pathval_);
         }
         if (other.tag == "road_2_2")
-        { transform.rotation = Quaternion.Euler(0, 0, 0);
-            //lastMouPos =Vector3.zero;
-            mousePos = Vector3.zero;
-
-            MovePaval(pavalroad2_2);
-
+        {
+            toList(other.gameObject);
+            MovePaval(pathval_);
         }
-       
+
     }
-   
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.transform.tag == "Plane")
@@ -304,7 +288,7 @@ public class PlayerManager : MonoBehaviour
             anim.SetBool("IsRun", true);
             anim.SetBool("IsJump", false);
         }
-        if(collision.transform.tag== "Lo_xo")
+        if (collision.transform.tag == "Lo_xo")
         {
             rigidbody.velocity = new Vector3(0, 8.5f, -5);
             Debug.Log("aaaa");
@@ -312,11 +296,19 @@ public class PlayerManager : MonoBehaviour
             anim.SetBool("IsRun", false);
 
         }
+        if (collision.transform.tag == "Trap_gai")
+        {
+            Debug.Log("vao trap gai");
+            Move = false;
+            rigidbody.AddForce(new Vector3(0, 0, -1) * 500);
+            StartCoroutine(timeskip());
+
+        }
     }
-    
+
     public void ToListVector(GameObject[] pavalpoint)
     {
-        for (int i = 0; i < pathvalGameObject.Length; i++)
+        for (int i = 0; i < pavalpoint.Length; i++)
         {
             pathval[i] = pavalpoint[i].transform.position;
         }
@@ -326,15 +318,32 @@ public class PlayerManager : MonoBehaviour
         Move = false;
         ToListVector(pavalpoint);
         rigidbody.isKinematic = true;
-        transform.DOPath( pathval, 1.5f, pathsystem).SetEase(Ease.Linear).OnComplete(() =>
-        {
-            
-            Move = true;        
-            rigidbody.isKinematic = false;
-        });
-    }  
+        transform.DOPath(pathval, 1.5f, pathsystem).SetEase(Ease.Linear).OnComplete(() =>
+       {
 
+           Move = true;
+           rigidbody.isKinematic = false;
+       });
+    }
+    IEnumerator timeskip()
+    {
+        lvPlayer -= 20;
+        yield return new WaitForSeconds(0.6f);
+        Move = true;
+    }
+    public void toList(GameObject dt)
+    {
+        Debug.Log(dt.transform.childCount);
+        for (int i = 0; i < dt.transform.childCount; i++)
+        {
+            pathval_[i] = dt.transform.GetChild(i).gameObject;
+        }
+    }
 }
+
+
+
+
 
 
 

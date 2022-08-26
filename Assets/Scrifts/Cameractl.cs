@@ -48,7 +48,7 @@ public class Cameractl : MonoBehaviour
     {
         // 
         //transform.position = new Vector3(player.position.x + 0, player.position.y + 7.3f, player.position.z - 9.3f);
-        transform.position = Vector3.Lerp(transform.position, new Vector3(player.position.x+ 0,player.position.y +7.3f ,player.position.z - 9.3f), 4*Time.deltaTime); /*new Vector3(0, 8.3f,player.position.z  -9.3f);*/
+        transform.position = Vector3.Lerp(transform.position, new Vector3(player.position.x+ 0,player.position.y +7.3f ,player.position.z - 9.3f), 2*Time.deltaTime); /*new Vector3(0, 8.3f,player.position.z  -9.3f);*/
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(24.64f, 0, 0), 3 * Time.deltaTime);
     }
     

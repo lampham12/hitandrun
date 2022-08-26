@@ -6,13 +6,18 @@ public class Enemies : MonoBehaviour
 {
     public int lvenemies;
     public bool shotted;
-
+    private Rigidbody rgEnemies;
+    private Collider collider;
     private void Start()
     {
         shotted = false;
+        rgEnemies = GetComponent<Rigidbody>();
+        collider = transform.gameObject.GetComponent<Collider>();
+
+
     }
 
-    void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
 
         if (other.gameObject.tag == "Ball")
@@ -32,9 +37,21 @@ public class Enemies : MonoBehaviour
                 MenuManager.MenuManagerIstance.YouLose.gameObject.SetActive(true);
             }
         }
-
-
-
     }
-   
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.transform.tag == "Player")
+        {
+            Debug.Log("va cham cung Player");
+            adfPlayer();
+
+
+        }
+    }
+    public void adfPlayer()
+    {
+        rgEnemies.AddForce(Vector3.forward*2f);
+        collider.isTrigger = true;
+    }
 }

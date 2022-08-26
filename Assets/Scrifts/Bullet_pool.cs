@@ -7,12 +7,14 @@ public class Bullet_pool : MonoBehaviour
     Transform vitri;
     private Transform spawnPos;
     private Transform targetPos;
-    private void OnEnable()
-    {
-    }
-    private void OnDisable()
-    {
-    }
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.transform.tag == "enemies")
+    //    {
+    //        gameObject.SetActive(false);
+    //        Destroy(collision.transform.gameObject);
+    //    }
+    //}
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("enemies"))
@@ -21,12 +23,7 @@ public class Bullet_pool : MonoBehaviour
             Destroy(other.gameObject);
 
         }
-        //if(other.CompareTag("hi"))
-        //{
 
-        //    gameObject.SetActive(false);
-        //    Instantiate(no, vitri.position, Quaternion.identity);
-        //}
 
     }
     public void Init(Transform spawnPos, Transform targetPos)
@@ -39,14 +36,9 @@ public class Bullet_pool : MonoBehaviour
     }
     public void Move()
     {
-        transform.position = Vector3.MoveTowards(transform.position, Vector3.Lerp(transform.position, targetPos.transform.position, 0.5f), 0.3f);
+        transform.position = Vector3.MoveTowards(transform.position, Vector3.Lerp(transform.position, targetPos.transform.position, 0.5f), 0.7f);
     }
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
+   
     void Update()
     {
         //Debug.LogError("update");
