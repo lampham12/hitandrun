@@ -28,8 +28,8 @@ public class PlayerManager : MonoBehaviour
 
     public bool Move = true;
     public Animator anim;
-
-    Rigidbody rigidbody;
+    private Rigidbody rigidbody;
+    private Collider collider;
 
     public PathType pathsystem = PathType.Linear;
     private Vector3[] pathval = new Vector3[8];
@@ -44,8 +44,10 @@ public class PlayerManager : MonoBehaviour
     private void Awake()
     {
         rigidbody = gameObject.GetComponent<Rigidbody>();
+        collider = gameObject.GetComponent<Collider>();
         anim = GetComponent<Animator>();
         PlayerManagerIstance = this;
+
     }
     private void Start()
     {
@@ -161,32 +163,32 @@ public class PlayerManager : MonoBehaviour
         }
         if (lvPlayer > 0 && lvPlayer <= 100)
         {
-            transform.localScale = new Vector3(30, 30, 30);//scale0%
+            transform.localScale = new Vector3(33, 33, 33);//scale0%
             speed = 14;
         }
         if (lvPlayer > 100 && lvPlayer <= 200)
         {
-            transform.localScale = new Vector3(33, 33, 33);//scale 10%
+            transform.localScale = new Vector3(36, 36, 36);//scale 10%
             speed = 15;
         }
         if (lvPlayer > 200 && lvPlayer <= 300)
         {
-            transform.localScale = new Vector3(36, 36, 36);//scale 20%
+            transform.localScale = new Vector3(39, 39, 39);//scale 20%
             speed = 16;
         }
         if (lvPlayer > 300 && lvPlayer <= 400)
         {
-            transform.localScale = new Vector3(39, 39, 39); //scale 30%
+            transform.localScale = new Vector3(42, 42, 42); //scale 30%
             speed = 17;
         }
         if (lvPlayer > 400 && lvPlayer <= 500)
         {
-            transform.localScale = new Vector3(42, 42, 42); //scale 40%
+            transform.localScale = new Vector3(45, 45, 45); //scale 40%
             speed = 18;
         }
         if (lvPlayer > 500)
         {
-            transform.localScale = new Vector3(45, 45, 45);//scale  50%
+            transform.localScale = new Vector3(48, 48, 48);//scale  50%
             speed = 19;
         }
     }
@@ -235,13 +237,13 @@ public class PlayerManager : MonoBehaviour
             //transform.Rotate(0, 0, -25f);
             //rigidbody.isKinematic = true;
         }
-        if (other.transform.tag == "Trap_gai")
-        {
-            gameObject.SetActive(false);
-            MenuManager.MenuManagerIstance.GameStace = false;
-            MenuManager.MenuManagerIstance.YouLose.gameObject.SetActive(true);
+        //if (other.transform.tag == "Trap_gai")
+        //{
+        //    gameObject.SetActive(false);
+        //    MenuManager.MenuManagerIstance.GameStace = false;
+        //    MenuManager.MenuManagerIstance.YouLose.gameObject.SetActive(true);
 
-        }
+        //}
         if (other.transform.tag == "in")
         {
 
@@ -300,8 +302,10 @@ public class PlayerManager : MonoBehaviour
         {
             Debug.Log("vao trap gai");
             Move = false;
-            rigidbody.AddForce(new Vector3(0, 0, -1) * 500);
-            StartCoroutine(timeskip());
+            //rigidbody.AddForce(new Vector3(0, 0, -1) * 500);
+            rigidbody.isKinematic = true;
+            collider.isTrigger = true;
+            StartCoroutine(timeskip()); 
 
         }
     }
@@ -328,8 +332,12 @@ public class PlayerManager : MonoBehaviour
     IEnumerator timeskip()
     {
         lvPlayer -= 20;
-        yield return new WaitForSeconds(0.6f);
+        yield return new WaitForSeconds(0.35f);
         Move = true;
+        
+        yield return new WaitForSeconds(2);
+        rigidbody.isKinematic = false;
+        collider.isTrigger = false;
     }
     public void toList(GameObject dt)
     {
@@ -339,6 +347,7 @@ public class PlayerManager : MonoBehaviour
             pathval_[i] = dt.transform.GetChild(i).gameObject;
         }
     }
+    
 }
 
 
