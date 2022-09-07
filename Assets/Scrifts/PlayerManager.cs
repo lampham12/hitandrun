@@ -58,8 +58,7 @@ public class PlayerManager : MonoBehaviour
     }
     void Update()
     {
-        Debug.Log("kakakka");
-        transform.position = new Vector3((Mathf.Clamp(transform.position.x, distance - 3.5f, distance + 3.5f)), transform.position.y, transform.position.z);
+        transform.position = new Vector3((Mathf.Clamp(transform.position.x, distance - 4.2f, distance + 4.2f)), transform.position.y, transform.position.z);
         if (MenuManager.MenuManagerIstance.GameStace && Move)
         {
             textlv.text = "Lv " + lvPlayer.ToString();
@@ -148,8 +147,13 @@ public class PlayerManager : MonoBehaviour
 
             }
         }
-
-        if (transform.position.y < 0f)
+        if (transform.position.y<=.04f)
+        {
+            anim.SetLayerWeight(1, 0f);
+            anim.SetBool("IsRun", true);
+            anim.SetBool("IsJump", false);
+        }
+        if (transform.position.y < -0.3f)
         {
             gameObject.SetActive(false);
             MenuManager.MenuManagerIstance.GameStace = false;
@@ -161,36 +165,7 @@ public class PlayerManager : MonoBehaviour
             MenuManager.MenuManagerIstance.GameStace = false;
             MenuManager.MenuManagerIstance.YouLose.gameObject.SetActive(true);
         }
-        if (lvPlayer > 0 && lvPlayer <= 100)
-        {
-            transform.localScale = new Vector3(33, 33, 33);//scale0%
-            speed = 14;
-        }
-        if (lvPlayer > 100 && lvPlayer <= 200)
-        {
-            transform.localScale = new Vector3(36, 36, 36);//scale 10%
-            speed = 15;
-        }
-        if (lvPlayer > 200 && lvPlayer <= 300)
-        {
-            transform.localScale = new Vector3(39, 39, 39);//scale 20%
-            speed = 16;
-        }
-        if (lvPlayer > 300 && lvPlayer <= 400)
-        {
-            transform.localScale = new Vector3(42, 42, 42); //scale 30%
-            speed = 17;
-        }
-        if (lvPlayer > 400 && lvPlayer <= 500)
-        {
-            transform.localScale = new Vector3(45, 45, 45); //scale 40%
-            speed = 18;
-        }
-        if (lvPlayer > 500)
-        {
-            transform.localScale = new Vector3(48, 48, 48);//scale  50%
-            speed = 19;
-        }
+        
     }
 
     public void PlayRun()
@@ -216,7 +191,7 @@ public class PlayerManager : MonoBehaviour
             transform.position = new Vector3(transform.position.x, transform.position.y, Mathf.MoveTowards(transform.position.z, 1000, speed * Time.deltaTime));
             Cameractl.CameractlIstance.rotationcamera = true;
             Cameractl.CameractlIstance.right = true;
-            transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x + 3.6f, transform.position.y + 1.2f, transform.position.z), 50 * Time.deltaTime);
+            transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x + 4.2f, transform.position.y + 1f, transform.position.z), 50 * Time.deltaTime);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0f, 0f, 25f), 50f * Time.deltaTime);
             rigidbody.isKinematic = true;
             thewall = true;
@@ -225,10 +200,8 @@ public class PlayerManager : MonoBehaviour
         if (other.tag == "Lo_xo_left")
         {
             therotation = false;
-            transform.rotation = Quaternion.Euler(0, 0, 0);
-
             Cameractl.CameractlIstance.rotationcamera = true;
-            transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x + -3.6f, transform.position.y + 1.2f, transform.position.z), 50 * Time.deltaTime);
+            transform.position = Vector3.Lerp(transform.position, new Vector3(transform.position.x + -4.2f, transform.position.y + 1f, transform.position.z), 50 * Time.deltaTime);
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0f, 0f, -25f), 50f * Time.deltaTime);
             rigidbody.isKinematic = true;
             thewall = true;
@@ -285,14 +258,51 @@ public class PlayerManager : MonoBehaviour
     {
         if (collision.transform.tag == "Plane")
         {
-            speed = 15f;
-            anim.SetLayerWeight(1, 0f);
-            anim.SetBool("IsRun", true);
-            anim.SetBool("IsJump", false);
+
+            if (lvPlayer > 0 && lvPlayer <= 100)
+            {
+                //transform.localScale = new Vector3(33, 33, 33);//scale0%
+                //speed = 14;
+            }
+            if (lvPlayer > 100 && lvPlayer <= 200)
+            {
+                transform.localScale = new Vector3(36, 36, 36);//scale 10%
+                speed = 15;
+            }
+            if (lvPlayer > 200 && lvPlayer <= 300)
+            {
+                transform.localScale = new Vector3(39, 39, 39);//scale 20%
+                speed = 16;
+            }
+            if (lvPlayer > 300 && lvPlayer <= 400)
+            {
+                transform.localScale = new Vector3(42, 42, 42); //scale 30%
+                speed = 17;
+            }
+            if (lvPlayer > 400 && lvPlayer <= 500)
+            {
+                transform.localScale = new Vector3(45, 45, 45); //scale 40%
+                speed = 18;
+            }
+            if (lvPlayer > 500)
+            {
+                transform.localScale = new Vector3(48, 48, 48);//scale  50%
+                speed = 19;
+            }
         }
         if (collision.transform.tag == "Lo_xo")
         {
-            rigidbody.velocity = new Vector3(0, 8.5f, -5);
+            rigidbody.velocity = new Vector3(0, 8.5f, -3);
+            Debug.Log("aaaa");
+            anim.SetBool("IsJump", true);
+            anim.SetBool("IsRun", false);
+
+        }
+        if (collision.transform.tag == "Lo_xo_Finish")
+        {
+            rigidbody.velocity = new Vector3(0, 11f, 0);
+            speed =19;
+
             Debug.Log("aaaa");
             anim.SetBool("IsJump", true);
             anim.SetBool("IsRun", false);
@@ -332,10 +342,10 @@ public class PlayerManager : MonoBehaviour
     IEnumerator timeskip()
     {
         lvPlayer -= 20;
-        yield return new WaitForSeconds(0.35f);
+        yield return new WaitForSeconds(0.15f);
         Move = true;
         
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(1.2F);
         rigidbody.isKinematic = false;
         collider.isTrigger = false;
     }

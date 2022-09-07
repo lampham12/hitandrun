@@ -11,7 +11,8 @@ public class CoinPicker : MonoBehaviour
     int coins = 0;
     private void Start()
     {
-        textcoins.text = "Coins :" + coins.ToString();
+        //textcoins.text = "Coins :" + coins.ToString();3
+             textcoins.text = coins.ToString() + " :";
     }
     //private void OnTriggerEnter(Collider other)
     //{
@@ -32,7 +33,7 @@ public class CoinPicker : MonoBehaviour
             coins++;
             Destroy(collision.gameObject);
             //Debug.Log("coins" + coins);
-            textcoins.text = "Coins :" + coins.ToString();
+            textcoins.text =  coins.ToString()+" :" ;
         }
     }
 }

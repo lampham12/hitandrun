@@ -25,6 +25,7 @@ TagManager:
   - Plane
   - Ball
   - PhysicsObject
+  - Lo_xo_Finish
   layers:
   - Default
   - TransparentFX

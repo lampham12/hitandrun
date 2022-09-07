@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
+using UnityEngine.EventSystems;
 
 public class MenuManager : MonoBehaviour
 {
@@ -11,6 +11,8 @@ public class MenuManager : MonoBehaviour
     public bool GameStace;
     public GameObject menuElement;
     public GameObject YouLose;
+    Ray ray;
+    RaycastHit hit;
     void Start()
     {
         MenuManagerIstance = this;
@@ -21,6 +23,7 @@ public class MenuManager : MonoBehaviour
     void Update()
     {
         
+    
     }
     public void StartGame()
     {
@@ -37,4 +40,6 @@ public class MenuManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         Debug.Log("Active Scene : " + SceneManager.GetActiveScene().name);
     }
+
+   
 }
