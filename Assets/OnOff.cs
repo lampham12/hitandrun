@@ -8,35 +8,52 @@ public class OnOff : MonoBehaviour
     public GameObject offimage;
     public GameObject on;
     public GameObject off;
-    public bool taget;
+    public bool muted=false;
     public void Start()
     {
-        taget = true;
+        if (!PlayerPrefs.HasKey("muted"))
+        {
+            PlayerPrefs.SetInt("muted", 1);
+            Load();
+
+        }
+        else
+        {
+            Load();
+        }
+
     }
     public void OnObject()
     {
-        if (taget)
+        if (muted==false)
         {
-            Debug.Log("da vao on");
+            muted = true;
             onimage.SetActive(true);
-            offimage.gameObject.SetActive(false);
+            offimage.SetActive(false);
             on.SetActive(true);
-            off.SetActive(false);           
+            off.SetActive(false);
         }
-        if (taget)
+        else
         {
+            muted = false;
             Debug.Log("da vao off");
             onimage.SetActive(false);
-            offimage.gameObject.SetActive(true);
+            offimage.SetActive(true);
             on.SetActive(false);
             off.SetActive(true);
         }
-        
+        Save();
     }
-    public void Target()
+    
+    private void Load()
     {
-       
+        muted = PlayerPrefs.GetInt("muted") == 1;
     }
+    private void Save()
+    {
+        PlayerPrefs.SetInt("muted", muted ? 1 : 0);
+    }
+
     
 
 }
