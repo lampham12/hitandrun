@@ -146,12 +146,19 @@ public class PlayerManager : MonoBehaviour
                 }
 
             }
-        }
-        if (transform.position.y<=.04f)
+            
+            if (transform.position.y > 3.5)
+            {
+                rigidbody.velocity = new Vector3(0, -2.2f, 0);
+            }
+            
+            }
+        if (transform.position.y <= .04f)
         {
             anim.SetLayerWeight(1, 0f);
             anim.SetBool("IsRun", true);
             anim.SetBool("IsJump", false);
+            anim.SetBool("IsJumpWall", false);
         }
         if (transform.position.y < -0.3f)
         {
@@ -165,7 +172,7 @@ public class PlayerManager : MonoBehaviour
             MenuManager.MenuManagerIstance.GameStace = false;
             MenuManager.MenuManagerIstance.YouLose.gameObject.SetActive(true);
         }
-        
+
     }
 
     public void PlayRun()
@@ -175,15 +182,15 @@ public class PlayerManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.transform.tag == "Lo_xo")
+        if (other.CompareTag ("Lo_xo"))
         {
-            rigidbody.velocity = new Vector3(0, 8.5f, -5);
+            rigidbody.velocity = new Vector3(0, 10f, 0);
             Debug.Log("aaaa");
             anim.SetBool("IsJump", true);
             anim.SetBool("IsRun", false);
 
-        }
-        if (other.transform.tag == "Lo_xo_right")
+        }       
+        if (other.CompareTag("Lo_xo_right"))
         {
             therotation = false;
             transform.rotation = Quaternion.Euler(0, 0, 0);
@@ -197,7 +204,7 @@ public class PlayerManager : MonoBehaviour
             thewall = true;
 
         }
-        if (other.tag == "Lo_xo_left")
+        if (other.CompareTag("Lo_xo_left"))
         {
             therotation = false;
             Cameractl.CameractlIstance.rotationcamera = true;
@@ -217,7 +224,7 @@ public class PlayerManager : MonoBehaviour
         //    MenuManager.MenuManagerIstance.YouLose.gameObject.SetActive(true);
 
         //}
-        if (other.transform.tag == "in")
+        if (other.CompareTag( "in"))
         {
 
             Destroy(other.gameObject);
@@ -227,26 +234,26 @@ public class PlayerManager : MonoBehaviour
             transform.position = new Vector3(transform.position.x + 500f, transform.position.y, transform.position.z);
 
         }
-        if (other.tag == "out")
+        if (other.CompareTag("out"))
         {
             distance = 0;
             transform.position = player;
             Cameractl.CameractlIstance.flash = true;
         }
 
-        if (other.tag == "road_1")
+        if (other.CompareTag("road_1"))
         {
             GameObject child = other.transform.GetChild(0).gameObject;
             toList(child);
             MovePaval(pathval_);
         }
-        if (other.tag == "road_2_1")
+        if (other.CompareTag("road_2_1"))
         {
 
             toList(other.gameObject);
             MovePaval(pathval_);
         }
-        if (other.tag == "road_2_2")
+        if (other.CompareTag ("road_2_2"))
         {
             toList(other.gameObject);
             MovePaval(pathval_);
@@ -256,7 +263,7 @@ public class PlayerManager : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.transform.tag == "Plane")
+        if (collision.transform.CompareTag("Plane"))
         {
 
             if (lvPlayer > 0 && lvPlayer <= 100)
@@ -290,7 +297,7 @@ public class PlayerManager : MonoBehaviour
                 speed = 19;
             }
         }
-        if (collision.transform.tag == "Lo_xo")
+        if (collision.transform.CompareTag("Lo_xo"))
         {
             rigidbody.velocity = new Vector3(0, 8.5f, -3);
             Debug.Log("aaaa");
@@ -298,7 +305,7 @@ public class PlayerManager : MonoBehaviour
             anim.SetBool("IsRun", false);
 
         }
-        if (collision.transform.tag == "Lo_xo_Finish")
+        if (collision.transform.CompareTag("Lo_xo_Finish"))
         {
             rigidbody.velocity = new Vector3(0, 11f, 0);
             speed =19;
@@ -308,7 +315,7 @@ public class PlayerManager : MonoBehaviour
             anim.SetBool("IsRun", false);
 
         }
-        if (collision.transform.tag == "Trap_gai")
+        if (collision.transform.CompareTag( "Trap_gai"))
         {
             Debug.Log("vao trap gai");
             Move = false;

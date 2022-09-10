@@ -17,13 +17,14 @@ public class Wall_left : MonoBehaviour
         {
             PlayerManager.PlayerManagerIstance.thewall = false;
             PlayerManager.PlayerManagerIstance.therotation = true;
+            other.gameObject.transform.rotation = Quaternion.Slerp(other.transform.rotation, Quaternion.Euler(0, 0, 0), 50 * Time.deltaTime);
+            rg.velocity = new Vector3(3.5f, 3, -10f);
+            PlayerManager.PlayerManagerIstance.anim.SetBool("IsJumpWall", true);
+            PlayerManager.PlayerManagerIstance.anim.SetBool("IsRun", false);
+            rg.isKinematic = false;
+            Cameractl.CameractlIstance.rotationcamera = false;
+
         }
-        other.gameObject.transform.rotation = Quaternion.Slerp(other.transform.rotation, Quaternion.Euler(0, 0, 0), 50 * Time.deltaTime);
-        rg.velocity = new Vector3(3.5f, 3, -10f);
-        PlayerManager.PlayerManagerIstance.anim.SetBool("IsJumpWall", true);
-        PlayerManager.PlayerManagerIstance.anim.SetBool("IsRun", false);
-        rg.isKinematic = false;
-        Cameractl.CameractlIstance.rotationcamera = false;
 
     }
 }
